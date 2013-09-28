@@ -8,6 +8,7 @@ from itertools import product
 from matplotlib import pyplot as plt 
 
 def lincom(matrix):
+    """Takes a matrix, A, from the commutator [A,X] and returns a new matrix, A', such that A' vec(X) = vec([A,X])."""
     n = matrix.shape[0]
     one = np.identity(n**2)
     X = np.zeros((n, n, n**2))
@@ -21,6 +22,7 @@ def lincom(matrix):
     return B
 
 def hermx(matlist):
+    """Takes a list of matricies, and returns an X that is Hermitian and commutes with the input list."""
     tol = 1e-10
     n = np.shape(matlist[0])[0]
     matlistdag = np.array([np.transpose(np.conjugate(matlist[a])) for a in range(len(matlist))])
@@ -28,7 +30,6 @@ def hermx(matlist):
     Tdag = np.array([lincom(matlistdag[a]) for a in range(matlistdag.shape[0])])
     S = np.sum((np.einsum('ia, aj', np.transpose(np.conjugate(T[a])), T[a]) + np.einsum('ia, aj', np.transpose(np.conjugate(Tdag[a])), Tdag[a])) for a in range(len(T)))
     O = np.linalg.eig(S)
-    num = np.sum(np.abs(O[0]) < tol)
     u = []
     for i in range(len(O[0])):
         if O[0][i] < tol:
