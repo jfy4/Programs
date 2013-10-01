@@ -3,7 +3,7 @@
 import numpy as np 
 import itertools as it
 
-def isomintrdif(tensor):
+def isomintrdif(tensor, ns):
     """Updates a tensor attempting to minimize the difference between
     the trucated tensor trace and the original."""
     d = tensor.shape
@@ -12,14 +12,20 @@ def isomintrdif(tensor):
     for i,j,k,l,m,n in it.product(*[range(x) for x in temp.shape]):
         M[d[0]*i+j, d[1]*k+l, m, n] = temp[i,j,k,l,m,n]
     q = np.einsum('ijaa', M)
-    O = np.linalg.eig(np.einsum('ia,aj', q, q))
-    tot = np.sum(O[0])
-    ee = []
-    for i in it.combinations(zip(O[0], np.transpose(O[1])), ns):
-        moe = zip(*i)
-        ee.append((np.abs(np.sum(moe[0]) - tot), np.transpose(moe[1])))
-    moe = zip(*ee)
-    U = moe[1][np.argmin(moe[0])]
+    try:
+        np.linalg.cholesky(q)
+        U, _, = np.linalg.svd(np.einsum('ia,aj', q, q))
+        U = U[:, :ns]
+    except:
+        O = np.linalg.eigh(np.einsum('ia,aj', q, q))
+        tot = np.sum(O[0])
+        ee = []
+        for i in it.combinations(zip(O[0], np.transpose(O[1])), ns):
+            ee.append((sum([k[0] for k in i]) - tot), [k[1] for k in i])
+            # moe = zip(*i)
+            # ee.append((np.abs(np.sum(moe[0]) - tot), np.transpose(moe[1])))
+        moe = zip(*ee)
+        U = moe[1][np.argmin(moe[0])]
     temp = np.einsum('ajkl, ai', M, U)
     U = resort(U)
     temp = np.einsum('iakm, jaln', temp, temp)
