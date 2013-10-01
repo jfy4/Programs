@@ -21,7 +21,7 @@ def isomintrdif(tensor, ns):
         tot = np.sum(O[0])
         ee = []
         for i in it.combinations(zip(O[0], np.transpose(O[1])), ns):
-            ee.append((sum([k[0] for k in i]) - tot), [k[1] for k in i])
+            ee.append((sum([k[0] for k in i]) - tot), np.array([k[1] for k in i]).T)
             # moe = zip(*i)
             # ee.append((np.abs(np.sum(moe[0]) - tot), np.transpose(moe[1])))
         moe = zip(*ee)
