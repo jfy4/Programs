@@ -3,7 +3,7 @@
 import numpy as np 
 from itertools import product
 
-def anisodynnumstates(tensor):
+def anisodynnumstates(tensor, ns):
     """Takes a tensor.  Contract the tensor with itself and 
     reduces the d**2 product-state legs to size d."""
     d = tensor.shape
