@@ -1,8 +1,6 @@
 from scipy.special import binom
 import numpy as np 
 
-kroneker = lambda a, b: 1.0 if a == b else 0.0
-
 def clebgor(j1, j2, j, m1, m2, m):
     """
     Parameters:    j1, j2, j: the angular momenta input
@@ -14,7 +12,15 @@ def clebgor(j1, j2, j, m1, m2, m):
     """
     zmin = int(min([j1 - m1, j2 + m2]))
     J = j1 + j2 + j
-    return (kroneker(m, m1 + m2) *
+    return (int(m1 + m2 == m) *
+                int(np.abs(j1 - j2) <= j <= (j1 + j2)) *
+                int(np.abs(m1) <= j1) *
+                int(np.abs(m2) <= j2) *
+                int(np.abs(m) <= j) *
+                int((j1 + m1) >= 0.0) *
+                int((j2 + m2) >= 0.0) *
+                int((j + m) >= 0.0) *
+                int(J >= 0) *
                 np.sqrt(binom(2 * j1, J - 2 * j) *
                 binom(2 * j2, J - 2 * j)/
                 (binom(J + 1, J - 2 * j) * 
@@ -24,3 +30,5 @@ def clebgor(j1, j2, j, m1, m2, m):
                 np.sum([(-1)**z * binom(J - 2 * j, z) * 
                 binom(J - 2 * j2, j1 - m1 - z) * 
                 binom(J - 2 * j1, j2 + m2 - z) for z in range(zmin + 1)]))
+
+print clebgor(2.5, 2.5, 1, 2.5, -1.5, 1)
