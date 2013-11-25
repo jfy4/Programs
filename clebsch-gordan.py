@@ -30,5 +30,3 @@ def clebgor(j1, j2, j, m1, m2, m):
                 np.sum([(-1)**z * binom(J - 2 * j, z) * 
                 binom(J - 2 * j2, j1 - m1 - z) * 
                 binom(J - 2 * j1, j2 + m2 - z) for z in range(zmin + 1)]))
-
-print clebgor(2.5, 2.5, 1, 2.5, -1.5, 1)
